@@ -658,6 +658,11 @@ sqlite3$(TEXE):	shell.c sqlite3.c
 		shell.c sqlite3.c \
 		$(LIBREADLINE) $(TLIBS) -rpath "$(libdir)"
 
+libsqlite3shell.la:	shell.lo sqlite3.lo
+	$(LTLINK) $(READLINE_FLAGS) $(SHELL_OPT) -o $@ \
+		shell.lo sqlite3.lo \
+		$(LIBREADLINE) $(TLIBS) -rpath "$(libdir)"
+
 sqldiff$(TEXE):	$(TOP)/tool/sqldiff.c sqlite3.lo sqlite3.h
 	$(LTLINK) -o $@ $(TOP)/tool/sqldiff.c sqlite3.lo $(TLIBS)
 
@@ -778,6 +783,9 @@ sqlite3-all.c:	sqlite3.c $(TOP)/tool/split-sqlite3c.tcl
 #
 sqlite3.lo:	sqlite3.c
 	$(LTCOMPILE) $(TEMP_STORE) -c sqlite3.c
+
+shell.lo:	shell.c
+	$(LTCOMPILE) $(TEMP_STORE) -c shell.c
 
 # Rules to build the LEMON compiler generator
 #
@@ -1435,7 +1443,7 @@ releasetest:
 
 # Standard install and cleanup targets
 #
-lib_install:	libsqlite3.la
+lib_install:	libsqlite3.la libsqlite3shell.la
 	$(INSTALL) -d $(DESTDIR)$(libdir)
 	$(LTINSTALL) libsqlite3.la $(DESTDIR)$(libdir)
 
