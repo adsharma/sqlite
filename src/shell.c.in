@@ -7375,6 +7375,23 @@ static int recoverDatabaseCmd(ShellState *pState, int nArg, char **azArg){
 }
 #endif /* !(SQLITE_OMIT_VIRTUALTABLE) && defined(SQLITE_ENABLE_DBPAGE_VTAB) */
 
+#ifdef SQLITE_ENABLE_WAL_REPLICATION
+static sqlite3_wal_replication replication = {
+  1,
+  0,
+  "shell_wal",
+  0,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+};
+
+sqlite3_wal_replication SQLITE_API *get_wal_replication() {
+  return &replication;
+}
+#endif /* SQLITE_ENABLE_WAL_REPLICATION */
 
 /*
 ** If an input line begins with "." then invoke this routine to

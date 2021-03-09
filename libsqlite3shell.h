@@ -20,3 +20,9 @@ typedef struct sqlite3_wal_replication {
   int (*xUndo)(sqlite3_wal_replication*, void *pArg);
   int (*xEnd)(sqlite3_wal_replication*, void *pArg);
 } sqlite3_wal_replication;
+
+sqlite3_wal_replication *get_wal_replication();
+int sqlite3_wal_replication_register(
+  sqlite3_wal_replication *pReplication, int makeDflt);
+int sqlite3_wal_replication_unregister(
+  sqlite3_wal_replication *pReplication);
