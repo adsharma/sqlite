@@ -7391,6 +7391,23 @@ static sqlite3_wal_replication replication = {
 sqlite3_wal_replication SQLITE_API *get_wal_replication() {
   return &replication;
 }
+
+int SQLITE_API setup_wal_replication_leader(ShellState *p) {
+  return sqlite3_wal_replication_leader(
+    p->db,
+    NULL,
+    "shell_wal",
+    NULL
+  );
+}
+
+int SQLITE_API setup_wal_replication_follower(ShellState *p) {
+  return sqlite3_wal_replication_follower(
+    p->db,
+    NULL
+  );
+}
+
 #endif /* SQLITE_ENABLE_WAL_REPLICATION */
 
 /*
@@ -10347,7 +10364,15 @@ static int do_meta_command(char *zLine, ShellState *p){
       }
     }
   }else
+#ifdef SQLITE_ENABLE_WAL_REPLICATION
+  if( c=='w' && strncmp(azArg[0], "wal_leader", n)==0 ){
+    setup_wal_replication_leader(p);
+  }else
+  if( c=='w' && strncmp(azArg[0], "wal_follower", n)==0 ){
+    setup_wal_replication_follower(p);
+  }else
 
+#endif /* SQLITE_ENABLE_WAL_REPLICATION */
   if( c=='w' && strncmp(azArg[0], "wheretrace", n)==0 ){
     unsigned int x = nArg>=2 ? (unsigned int)integerValue(azArg[1]) : 0xffffffff;
     sqlite3_test_control(SQLITE_TESTCTRL_TRACEFLAGS, 3, &x);
